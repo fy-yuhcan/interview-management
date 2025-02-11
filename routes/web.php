@@ -9,4 +9,4 @@ Route::get('/', function () {
 
 Route::view('/login', 'auth.login')->name('login');
 Route::get('/redirect/{provider}', [SocialiteController::class, 'redirect'])->name('redirect');
-Route::get('/callback/{provider}', [SocialiteController::class, 'callback'])->name('callback');
+Route::get('/login/{provider}/callback', [SocialiteController::class, 'callback'])->name('callback');

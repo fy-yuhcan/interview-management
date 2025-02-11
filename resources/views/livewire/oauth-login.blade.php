@@ -1,7 +1,6 @@
 <div>
     <!-- Google ログインボタン -->
-    <a href="{{ route('redirect', ['provider' => 'google']) }}" class="btn btn-primary">
+    <button wire:click="loginGoogle" class="btn btn-primary">
         Googleでログイン
-    </a>
-
+    </button>
 </div>
