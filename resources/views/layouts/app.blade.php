@@ -9,6 +9,8 @@
     @livewireStyles
 </head>
 <body>
+    @livewire('header')
+    
     <div class="container">
         @yield('content')
     </div>
