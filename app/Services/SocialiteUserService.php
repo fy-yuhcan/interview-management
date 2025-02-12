@@ -10,13 +10,14 @@ class SocialiteUserService
     public function findOrCreateUser($user,$provider)
     {
         return User::firstOrCreate(
-            ['email' => $user->getEmail()],
+            ['email' => $user->email],
             [
-                'name' => $user->getName(),
+                'name' => $user->name,
                 'provider' => $provider,
-                'provider_id' => $user->getId(),
-                'avatar' => $user->getAvatar(),
+                'provider_id' => $user->id,
+                'avatar' => $user->avatar,
                 'token' => $user->token,
+                'refresh_token' => $user->refreshToken,
             ]
             );
     }
