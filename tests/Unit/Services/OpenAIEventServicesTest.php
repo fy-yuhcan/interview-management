@@ -37,4 +37,35 @@ class OpenAIEventServicesTest extends TestCase
         $this->assertEquals($fakeresponse, $response);
 
     }
+
+    public function test_service_create_event_in_db_from_openai_response():void
+    {
+        //openAIからのレスポンスがすでに定義されている体で考える、場合によってはレスポンスがこのようになるか検証必要かも
+        $formattedResponse = [
+            'title'      => '会議',
+            'start_time' => '2025-02-20 10:00:00',
+            'end_time'   => '2025-02-20 11:00:00',
+            'detail'     => 'プロジェクト進捗会議',
+        ];
+
+        //json形式に変換
+        $fakeAPIresponse = json_encode($formattedResponse);
+
+        //OpenAIEventServiceをインスタンス化
+        $service = new OpenAIEventService();
+
+        //createEventメソッドを実行
+        $event = $service->createEvent($fakeAPIresponse);
+
+        //データベースにデータが保存されているか確認
+        $this->assertDatabaseHas('events', [
+            'title'      => '会議',
+            'start_time' => '2025-02-20 10:00:00',
+            'end_time'   => '2025-02-20 11:00:00',
+            'detail'     => 'プロジェクト進捗会議',
+        ]);
+
+        //Eventクラスのインスタンスか確認
+        $this->assertInstanceOf(Event::class, $event);
+    }
 }
