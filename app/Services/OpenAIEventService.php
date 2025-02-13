@@ -73,6 +73,9 @@ class OpenAIEventService
             'title' => $formattedResponse['title'],
             'start_time' => $formattedResponse['start_time'],
             'end_time' => $formattedResponse['end_time'],
+            'reservation_time' => $formattedResponse['reservation_time'],
+            'status' => $formattedResponse['status'],
+            'url' => $formattedResponse['url'],
             'detail' => $formattedResponse['detail'],
         ]);
 
