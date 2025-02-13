@@ -81,6 +81,7 @@ class OpenAIEventServicesTest extends TestCase
 
         //json形式に変換
         $fakeAPIresponse = json_encode($formattedResponse);
+        $fakeAPIresponse = json_decode($fakeAPIresponse, true);
 
         //OpenAIEventServiceをインスタンス化
         $service = new OpenAIEventService();
