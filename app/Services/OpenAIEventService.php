@@ -49,29 +49,13 @@ class OpenAIEventService
                 ]
             ]
         ]);
-
-        // OpenAIのレスポンスを整形
-        $jsonText = $response['choices'][0]['message']['content'] ?? '';
-
-        // もし $jsonText が文字列でなければ、エンコードして文字列に変換
-        if (!is_string($jsonText)) {
-            $jsonText = json_encode($jsonText);
-        }
-
-        // もしコードブロックなどが含まれていたら、正規表現で JSON 部分のみを抽出
-        if (preg_match('/```json\s*(\{.*\})\s*```/s', $jsonText, $matches)) {
-            $jsonText = $matches[1];
-        }
-
-        $jsonText = trim($jsonText);
-
-        // レスポンスが空の場合はエラーを返す
-        if (empty($jsonText)) {
-            return response()->json(['error' => 'Failed to get response from OpenAI'], 500);
-        }
+        $contentText = $response['choices'][0]['message']['content'] ?? '';
+        
+        $jsonText = $this->extractJsonFromResponse($contentText);
 
         // レスポンスを配列に変換
         $formattedResponse = json_decode($jsonText, true);
+
         if (json_last_error() !== JSON_ERROR_NONE) {
             throw new \Exception("JSON decode error: " . json_last_error_msg());
         }
@@ -99,5 +83,29 @@ class OpenAIEventService
         ]);
 
         return $event;
+    }
+
+    /**
+     * レスポンスから JSON 部分のみを抽出する
+     *
+     * @param string $contentText
+     * @return string
+     */
+    private function extractJsonFromResponse($contentText)
+    {
+
+        // もし $jsonText が文字列でなければ、エンコードして文字列に変換
+        if (!is_string($contentText)) {
+            $jsonText = json_encode($contentText);
+        }
+
+        // もしコードブロックなどが含まれていたら、正規表現で JSON 部分のみを抽出
+        if (preg_match('/```json\s*(\{.*\})\s*```/s', $contentText, $matches)) {
+            $contentText = $matches[1];
+        }
+
+        $jsonText = trim($contentText);
+
+        return $jsonText;
     }
 }
