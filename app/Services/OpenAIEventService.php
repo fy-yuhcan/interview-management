@@ -16,8 +16,9 @@ class OpenAIEventService
      */
     public function createEventFromPrompt($prompt)
     {
+        $userId = Auth::id();
         $formattedResponse = $this->getFormattedEventData($prompt);
-        return $this->createEvent($formattedResponse);
+        return $this->createEvent($formattedResponse,$userId);
     }
 
     /**
@@ -33,12 +34,12 @@ class OpenAIEventService
             'model' => 'gpt-3.5-turbo',
             'messages' => [
                 [
-                'role' => 'system',
-                'content' => 'You are a calendar app. A user asks you to schedule a meeting at a specific time. The user says: "Schedule a meeting for me at 2pm on Tuesday."'
+                    'role' => 'system',
+                    'content' => 'You are a calendar app. A user asks you to schedule a meeting at a specific time. The user says: "Schedule a meeting for me at 2pm on Tuesday."'
                 ],
                 [
-                'role' => 'user',
-                'content' => $prompt
+                    'role' => 'user',
+                    'content' => $prompt
                 ]
             ]
         ]);
@@ -64,7 +65,7 @@ class OpenAIEventService
      * @return void
      */
     public function createEvent($formattedResponse, $userId)
-    {   
+    {
         //$formattedResponseを連想配列に変換
         $formattedResponse = json_decode($formattedResponse, true);
 
@@ -81,5 +82,4 @@ class OpenAIEventService
 
         return $event;
     }
-    
 }
