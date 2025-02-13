@@ -2,6 +2,7 @@
 
 namespace Tests\Unit;
 
+use App\Services\OpenAIEventService;
 use Illuminate\Support\Facades\Http;
 use OpenAI\Laravel\Facades\OpenAI;
 use PHPUnit\Framework\TestCase;
