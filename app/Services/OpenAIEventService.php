@@ -30,10 +30,10 @@ class OpenAIEventService
     private function getFormattedEventData($prompt)
     {
         $systemMessage = 'You are a calendar app. A user will provide a scheduling request in natural language. ' .
-        'Please return a valid JSON object with the following keys: ' .
-        '"title", "start_time", "end_time", "reservation_time", "status", "url", "detail". ' .
-        'The start_time and end_time should be in the format "YYYY-MM-DD HH:MM:SS". ' .
-        'Do not include any extra text or commentary. Only output valid JSON.';
+            'Please return a valid JSON object with the following keys: ' .
+            '"title", "start_time", "end_time", "reservation_time", "status", "url", "detail". ' .
+            'The start_time and end_time should be in the format "YYYY-MM-DD HH:MM:SS". ' .
+            'Do not include any extra text or commentary. Only output valid JSON.';
 
         // OpenAI API へのリクエスト
         $response = OpenAI::chat()->create([
@@ -50,7 +50,7 @@ class OpenAIEventService
             ]
         ]);
         $contentText = $response['choices'][0]['message']['content'] ?? '';
-        
+
         $jsonText = $this->extractJsonFromResponse($contentText);
 
         // レスポンスを配列に変換
