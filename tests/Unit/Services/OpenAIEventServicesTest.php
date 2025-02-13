@@ -3,13 +3,15 @@
 namespace Tests\Unit;
 
 use App\Models\Event;
+use App\Models\User;
 use App\Services\OpenAIEventService;
-use Illuminate\Support\Facades\Http;
+use Illuminate\Foundation\Testing\RefreshDatabase;
 use OpenAI\Laravel\Facades\OpenAI;
-use PHPUnit\Framework\TestCase;
+use Tests\TestCase;
 
 class OpenAIEventServicesTest extends TestCase
 {
+    use RefreshDatabase;
     /**
      * A basic unit test example.
      */
@@ -47,6 +49,9 @@ class OpenAIEventServicesTest extends TestCase
             'title'      => '会議',
             'start_time' => '2025-02-20 10:00:00',
             'end_time'   => '2025-02-20 11:00:00',
+            'reservation_time' => '2025-02-20 09:00:00',
+            'status'     => '予定',
+            'url'        => 'https://example.com',
             'detail'     => 'プロジェクト進捗会議',
         ];
 
@@ -56,14 +61,21 @@ class OpenAIEventServicesTest extends TestCase
         //OpenAIEventServiceをインスタンス化
         $service = new OpenAIEventService();
 
+        $user = User::factory()->create();
+
+
         //createEventメソッドを実行
-        $event = $service->createEvent($fakeAPIresponse);
+        $event = $service->createEvent($fakeAPIresponse,$user->id);
 
         //データベースにデータが保存されているか確認
         $this->assertDatabaseHas('events', [
+            'user_id'    => $user->id,
             'title'      => '会議',
             'start_time' => '2025-02-20 10:00:00',
             'end_time'   => '2025-02-20 11:00:00',
+            'reservation_time' => '2025-02-20 09:00:00',
+            'status'     => '予定',
+            'url'        => 'https://example.com',
             'detail'     => 'プロジェクト進捗会議',
         ]);
 

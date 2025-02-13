@@ -60,17 +60,14 @@ class OpenAIEventService
     /**
      * OpenAI API から取得したデータをDBに保存する
      *
-     * @param array $formattedResponse
+     * @param string $formattedResponse
      * @return void
      */
-    public function createEvent($formattedResponse)
-    {
-        // ログインユーザーのIDを取得
-        $userId = Auth::id();
-        if (empty($userId)) {
-            return response()->json(['error' => 'Failed to get user ID'], 500);
-        }
-        
+    public function createEvent($formattedResponse, $userId)
+    {   
+        //$formattedResponseを連想配列に変換
+        $formattedResponse = json_decode($formattedResponse, true);
+
         $event = Event::create([
             'user_id' => $userId,
             'title' => $formattedResponse['title'],
