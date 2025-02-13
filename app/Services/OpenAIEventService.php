@@ -62,7 +62,7 @@ class OpenAIEventService
      * @param array $formattedResponse
      * @return void
      */
-    private function createEvent($formattedResponse)
+    public function createEvent($formattedResponse)
     {
         // ログインユーザーのIDを取得
         $userId = Auth::id();
