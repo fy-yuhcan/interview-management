@@ -2,6 +2,7 @@
 
 namespace App\Services;
 
+use App\Models\Event;
 use Illuminate\Support\Facades\Auth;
 use OpenAI\Laravel\Facades\OpenAI;
 

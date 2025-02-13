@@ -2,6 +2,7 @@
 
 namespace Tests\Unit;
 
+use App\Models\Event;
 use App\Services\OpenAIEventService;
 use Illuminate\Support\Facades\Http;
 use OpenAI\Laravel\Facades\OpenAI;
@@ -39,7 +40,7 @@ class OpenAIEventServicesTest extends TestCase
 
     }
 
-    public function test_service_create_event_in_db_from_openai_response():void
+    public function test_service_create_event_in_db_from_openai_response()
     {
         //openAIからのレスポンスがすでに定義されている体で考える、場合によってはレスポンスがこのようになるか検証必要かも
         $formattedResponse = [
