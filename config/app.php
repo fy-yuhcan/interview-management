@@ -65,7 +65,7 @@ return [
     |
     */
 
-    'timezone' => env('APP_TIMEZONE'),
+    'timezone' => env('APP_TIMEZONE','Asia/Tokyo'),
 
     /*
     |--------------------------------------------------------------------------
@@ -78,11 +78,11 @@ return [
     |
     */
 
-    'locale' => env('APP_LOCALE'),
+    'locale' => env('APP_LOCALE','ja'),
 
-    'fallback_locale' => env('APP_FALLBACK_LOCALE'),
+    'fallback_locale' => env('APP_FALLBACK_LOCALE','ja'),
 
-    'faker_locale' => env('APP_FAKER_LOCALE'),
+    'faker_locale' => env('APP_FAKER_LOCALE','ja_JP'),
 
     /*
     |--------------------------------------------------------------------------
