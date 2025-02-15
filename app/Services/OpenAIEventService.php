@@ -17,8 +17,13 @@ class OpenAIEventService
     public function createEventFromPrompt($prompt)
     {
         $userId = Auth::id();
+
         $formattedResponse = $this->getFormattedEventData($prompt);
-        return $this->createEvent($formattedResponse, $userId);
+
+        // EventCreateService クラスのインスタンスを生成して createEvent メソッドを呼び出して登録
+        $createEventService = new EventCreateService();
+
+        return $createEventService->createEvent($formattedResponse, $userId);
     }
 
     /**
@@ -61,28 +66,6 @@ class OpenAIEventService
         }
 
         return $formattedResponse;
-    }
-
-    /**
-     * OpenAI API から取得したデータをDBに保存する
-     *
-     * @param string $formattedResponse
-     * @return void
-     */
-    public function createEvent($formattedResponse, $userId)
-    {
-        $event = Event::create([
-            'user_id' => $userId,
-            'title' => $formattedResponse['title'],
-            'start_time' => $formattedResponse['start_time'],
-            'end_time' => $formattedResponse['end_time'],
-            'reservation_time' => $formattedResponse['reservation_time'],
-            'status' => $formattedResponse['status'],
-            'url' => $formattedResponse['url'],
-            'detail' => $formattedResponse['detail'],
-        ]);
-
-        return $event;
     }
 
     /**

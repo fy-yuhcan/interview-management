@@ -4,6 +4,7 @@ namespace Tests\Unit;
 
 use App\Models\Event;
 use App\Models\User;
+use App\Services\EventCreateService;
 use App\Services\OpenAIEventService;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use OpenAI\Laravel\Facades\OpenAI;
@@ -83,8 +84,7 @@ class OpenAIEventServicesTest extends TestCase
         $fakeAPIresponse = json_encode($formattedResponse);
         $fakeAPIresponse = json_decode($fakeAPIresponse, true);
 
-        //OpenAIEventServiceをインスタンス化
-        $service = new OpenAIEventService();
+        $service = new EventCreateService();
 
         $user = User::factory()->create();
 

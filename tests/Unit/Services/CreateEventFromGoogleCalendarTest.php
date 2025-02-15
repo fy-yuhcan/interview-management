@@ -4,7 +4,7 @@ namespace Tests\Unit;
 
 use App\Models\Event;
 use App\Models\User;
-use App\Services\OpenAIEventService;
+use App\Services\EventCreateService;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Tests\TestCase;
 
@@ -57,8 +57,7 @@ class CreateEventFromGoogleCalendarTest extends TestCase
             'detail'     => $fakeGoogleEvent->getDetail(),
         ];
 
-        //OpenAIEventServiceをインスタンス化
-        $service = new OpenAIEventService();
+        $service = new EventCreateService();
 
         //createEventメソッドを実行
         $event = $service->createEvent($formattedResponse, $user->id);
