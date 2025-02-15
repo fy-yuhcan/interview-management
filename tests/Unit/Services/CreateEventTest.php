@@ -4,12 +4,15 @@ namespace Tests\Unit;
 
 use App\Models\Event;
 use App\Models\User;
-use PHPUnit\Framework\TestCase;
+use App\Services\EventCreateService;
+use Illuminate\Foundation\Testing\RefreshDatabase;
+use Tests\TestCase;
 
 class CreateEventTest extends TestCase
 {
+    use RefreshDatabase;
     /**
-     * A basic unit test example.
+     * イベントを作成できるかのテスト
      */
     public function test_create_event(): void
     {
