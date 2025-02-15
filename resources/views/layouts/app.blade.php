@@ -1,7 +1,6 @@
 <!-- resources/views/layouts/app.blade.php -->
 <!DOCTYPE html>
 <html lang="ja">
-
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -9,7 +8,6 @@
     <!-- Livewire 用のスタイルシート -->
     @livewireStyles
 </head>
-
 <body>
     <div class="container">
         @yield('content')
@@ -18,5 +16,4 @@
     <!-- Livewire 用のスクリプト -->
     @livewireScripts
 </body>
-
 </html>
