@@ -30,6 +30,11 @@ class GoogleCalendarService
     }
 
 
+    /**
+     * ログイン中のユーザーが所有する primary カレンダーからイベントを取得し、フォーマットするメソッド
+     *
+     * @return array すべてのイベントオブジェクトの配列
+     */
     public function getFormattedEvents(): array
     {
         $events = $this->getEvents();
@@ -53,6 +58,7 @@ class GoogleCalendarService
             'maxResults'   => 100,
             'orderBy'      => 'startTime',
             'singleEvents' => true,
+            //ここで現在時刻以降のイベントを取得するように設定
             'timeMin'      => date('c'), 
         ];
 
@@ -68,10 +74,11 @@ class GoogleCalendarService
      */
     public function formatGoogleEvent($googleEvent): array
     {
-        // 開始と終了の取得例
+        //googleカレンダーからのイベントの開始と終了時間を取得
         $start = $googleEvent->getStart();
         $end   = $googleEvent->getEnd();
 
+        //整形するために時間を取得
         $startTime = $start->getDateTime() ?? $start->getDate();
         $endTime   = $end->getDateTime()   ?? $end->getDate();
 
