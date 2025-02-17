@@ -3,6 +3,7 @@
 namespace App\Services;
 
 use App\Models\Event;
+use App\Notifications\EventCreatedNotification;
 use Illuminate\Support\Facades\Auth;
 use OpenAI\Laravel\Facades\OpenAI;
 
@@ -16,14 +17,19 @@ class OpenAIEventService
      */
     public function createEventFromPrompt($prompt)
     {
-        $userId = Auth::id();
+        $user = Auth::user();
 
         $formattedResponse = $this->getFormattedEventData($prompt);
 
         // EventCreateService クラスのインスタンスを生成して createEvent メソッドを呼び出して登録
         $createEventService = new EventCreateService();
 
-        return $createEventService->createEvent($formattedResponse, $userId);
+        $event = $createEventService->createEvent($formattedResponse, $user->id);
+
+        // イベント作成通知を送信
+        $user->notify(new EventCreatedNotification($event));
+
+        return $event;
     }
 
     /**
