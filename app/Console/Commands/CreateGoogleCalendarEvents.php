@@ -28,20 +28,30 @@ class CreateGoogleCalendarEvents extends Command
      */
     public function handle()
     {
-        // tokenがあるユーザーを取得
-        $users = User::WhereNotNull('token')->get();
-        
-        // イベントを作成するサービスクラス
-        $createdEvents = new EventCreateService();
+        try {
+            // tokenがあるユーザーを取得
+            $users = User::WhereNotNull('token')->get();
 
-        // ユーザーごとにイベントを取得してDBに保存
-        foreach ($users as $user) {
-            $service = new GoogleCalendarService($user->token);
-            $events = $service->getFormattedEvents();
-    
-            foreach ($events as $data) {
-                $createdEvents->createEvent($data, $user->id);
+            // ユーザーがいない場合はエラーを返す
+            if ($users->isEmpty()) {
+                throw new \Exception('No users with tokens found.');
             }
+            
+            // イベントを作成するサービスクラス
+            $createdEvents = new EventCreateService();
+
+            // ユーザーごとにイベントを取得してDBに保存
+            foreach ($users as $user) {
+                $service = new GoogleCalendarService($user->token);
+                $events = $service->getFormattedEvents();
+
+                foreach ($events as $data) {
+                    $createdEvents->createEvent($data, $user->id);
+                }
+            }
+        } catch (\Exception $e) {
+            $this->error($e->getMessage());
+            return;
         }
     }
 }
