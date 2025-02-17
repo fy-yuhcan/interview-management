@@ -2,6 +2,7 @@
 
 namespace App\Notifications;
 
+use App\Models\Event;
 use Illuminate\Bus\Queueable;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Notifications\Messages\MailMessage;
@@ -11,12 +12,14 @@ class EventCreatedNotification extends Notification
 {
     use Queueable;
 
+    protected Event $event;
+    
     /**
-     * Create a new notification instance.
+     * @param Event $event
      */
-    public function __construct()
+    public function __construct(Event $event)
     {
-        //
+        $this->event = $event;
     }
 
     /**
@@ -35,9 +38,9 @@ class EventCreatedNotification extends Notification
     public function toMail(object $notifiable): MailMessage
     {
         return (new MailMessage)
-                    ->line('The introduction to the notification.')
-                    ->action('Notification Action', url('/'))
-                    ->line('Thank you for using our application!');
+                    ->line('イベント:' . $this->event->title . 'を作成しました')
+                    ->line('開始日時:' . $this->event->start_time)
+                    ->action('イベント詳細', url('/events/' . $this->event->id));
     }
 
     /**
