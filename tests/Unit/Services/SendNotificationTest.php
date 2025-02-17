@@ -19,12 +19,13 @@ class SendNotificationTest extends TestCase
 
     public function test_create_event_sends_notification()
     {
+        //notificationをfake化
         Notification::fake();
 
         $user = User::factory()->create();
         $this->actingAs($user);
 
-        // 3) OpenAIEventService のモックを部分的に作成し、getFormattedEventData() だけ固定値を返すようにする
+        //OpenAIEventServiceのモックを部分的に作成し、getFormattedEventData()だけ固定値を返すようにする
         $sut = Mockery::mock(OpenAIEventService::class)->makePartial();
         $sut->shouldReceive('getFormattedEventData')
             ->once()
@@ -57,7 +58,7 @@ class SendNotificationTest extends TestCase
             }
         );
 
-        // 6) DBにイベントが作成されているか検証
+        //DBにイベントが作成されているか検証
         $this->assertDatabaseHas('events', [
             'user_id'    => $user->id,
             'title'      => 'AIイベント',
