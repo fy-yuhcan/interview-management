@@ -76,6 +76,7 @@ class GoogleCalendarService
         $endTime   = $end->getDateTime()   ?? $end->getDate();
 
         return [
+            'calendar_id'       => $googleEvent->getId() ?? null,
             'title'             => $googleEvent->getSummary() ?? null,
             'start_time'        => $startTime,
             'end_time'          => $endTime,

@@ -8,7 +8,12 @@ class EventCreateService
 {
     public function createEvent($formattedResponse,$userId)
     {
-        return Event::create([
+        return Event::firstOrCreate(
+            [
+            'user_id' => $userId,
+            'calendar_id' => $formattedResponse['calendar_id']
+            ],
+            [
             'user_id' => $userId,
             //TODO:優先度はあとで実装
             'priority_id' => $formattedResponse['priority_id'] ?? null,
