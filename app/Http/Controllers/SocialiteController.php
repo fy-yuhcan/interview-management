@@ -19,9 +19,9 @@ class SocialiteController extends Controller
     public function redirect($provider)
     {
         return Socialite::driver($provider)
-        ->scopes(['https://www.googleapis.com/auth/calendar.events'])
-        ->with(['access_type' => 'offline'])
-        ->redirect();
+            ->scopes(['https://www.googleapis.com/auth/calendar.events'])
+            ->with(['access_type' => 'offline'])
+            ->redirect();
     }
 
     //認証のコールバック処理
@@ -38,4 +38,3 @@ class SocialiteController extends Controller
         return redirect('/');
     }
 }
-
