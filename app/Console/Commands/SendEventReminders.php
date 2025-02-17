@@ -34,10 +34,14 @@ class SendEventReminders extends Command
         $end = $now->copy()->addMinutes(1);
 
         // 1分間隔で通知するイベントを取得
-        $events = Event::whereBetween('reservation_time', [$now, $end])->get();
+        $events = Event::where('reminder_sent', false)
+            ->whereBetween('reservation_time', [$now, $end])
+            ->get();
 
+        // イベントごとに通知を送信してreminder_sentをtrueにする
         foreach ($events as $event) {
             $event->user->notify(new EventReminderNotification($event));
+            $event->reminder_sent = true;
         }
     }
 }
