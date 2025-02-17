@@ -29,6 +29,19 @@ class GoogleCalendarService
         }
     }
 
+
+    public function getFormattedEvents(): array
+    {
+        $events = $this->getEvents();
+        $formattedEvents = [];
+
+        foreach ($events as $event) {
+            $formattedEvents[] = $this->formatGoogleEvent($event);
+        }
+
+        return $formattedEvents;
+    }
+
     /**
      * ログイン中のユーザーが所有する primary カレンダーからイベントを取得
      *
