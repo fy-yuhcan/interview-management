@@ -6,25 +6,41 @@ use App\Models\Event;
 
 class EventCreateService
 {
-    public function createEvent($formattedResponse,$userId)
+    public function createEvent($formattedResponse, $userId)
     {
-        return Event::firstOrCreate(
-            [
-            'user_id' => $userId,
-            'calendar_id' => $formattedResponse['calendar_id']
-            ],
-            [
-            'user_id' => $userId,
-            //TODO:優先度はあとで実装
-            'priority_id' => $formattedResponse['priority_id'] ?? null,
-            'calendar_id' => $formattedResponse['calendar_id'] ?? null,
-            'title' => $formattedResponse['title'] ?? null,
-            'start_time' => $formattedResponse['start_time'] ?? null,
-            'end_time' => $formattedResponse['end_time'] ?? null,
-            'reservation_time' => $formattedResponse['reservation_time'] ?? null,
-            'status' => $formattedResponse['status'] ?? null,
-            'url' => $formattedResponse['url'] ?? null,
-            'detail' => $formattedResponse['detail'] ?? null,
-        ]);
+        if (empty($formattedResponse['calendar_id'])) {
+            return Event::create([
+                'user_id' => $userId,
+                'priority_id' => $formattedResponse['priority_id'] ?? null,
+                'calendar_id' => $formattedResponse['calendar_id'] ?? null,
+                'title' => $formattedResponse['title'] ?? null,
+                'start_time' => $formattedResponse['start_time'] ?? null,
+                'end_time' => $formattedResponse['end_time'] ?? null,
+                'reservation_time' => $formattedResponse['reservation_time'] ?? null,
+                'status' => $formattedResponse['status'] ?? null,
+                'url' => $formattedResponse['url'] ?? null,
+                'detail' => $formattedResponse['detail'] ?? null,
+            ]);
+        } else {
+            return Event::firstOrCreate(
+                [
+                    'user_id' => $userId,
+                    'calendar_id' => $formattedResponse['calendar_id']
+                ],
+                [
+                    'user_id' => $userId,
+                    //TODO:優先度はあとで実装
+                    'priority_id' => $formattedResponse['priority_id'] ?? null,
+                    'calendar_id' => $formattedResponse['calendar_id'] ?? null,
+                    'title' => $formattedResponse['title'] ?? null,
+                    'start_time' => $formattedResponse['start_time'] ?? null,
+                    'end_time' => $formattedResponse['end_time'] ?? null,
+                    'reservation_time' => $formattedResponse['reservation_time'] ?? null,
+                    'status' => $formattedResponse['status'] ?? null,
+                    'url' => $formattedResponse['url'] ?? null,
+                    'detail' => $formattedResponse['detail'] ?? null,
+                ]
+            );
+        }
     }
 }
