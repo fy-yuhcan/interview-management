@@ -48,5 +48,29 @@ class GoogleCalendarService
 
         return $event;
     }
+
+
+    /**
+     * GoogleイベントをEventCreateServiceで使えるようにフォーマットする
+     */
+    private function formatGoogleEvent($googleEvent): array
+    {
+        // 開始と終了の取得例
+        $start = $googleEvent->getStart();
+        $end   = $googleEvent->getEnd();
+
+        $startTime = $start->getDateTime() ?? $start->getDate();
+        $endTime   = $end->getDateTime()   ?? $end->getDate();
+
+        return [
+            'title'             => $googleEvent->getSummary() ?? null,
+            'start_time'        => $startTime,
+            'end_time'          => $endTime,
+            'reservation_time'  => null, 
+            'status'            => '予定',
+            'url'               => '', 
+            'detail'            => $googleEvent->getDescription()   ?? null,
+        ];
+    }
 }
 
