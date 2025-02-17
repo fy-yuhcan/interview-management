@@ -38,7 +38,7 @@ class OpenAIEventService
      * @param string $prompt
      * @return array
      */
-    private function getFormattedEventData($prompt)
+    public function getFormattedEventData($prompt)
     {
         $systemMessage = 'You are a calendar app. A user will provide a scheduling request in natural language. ' .
             'Please return a valid JSON object with the following keys: ' .

@@ -12,8 +12,8 @@ class EventCreatedNotification extends Notification
 {
     use Queueable;
 
-    protected Event $event;
-    
+    public Event $event;
+
     /**
      * @param Event $event
      */
