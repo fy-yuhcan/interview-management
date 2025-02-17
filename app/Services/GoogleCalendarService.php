@@ -66,7 +66,7 @@ class GoogleCalendarService
     /**
      * GoogleイベントをEventCreateServiceで使えるようにフォーマットする
      */
-    private function formatGoogleEvent($googleEvent): array
+    public function formatGoogleEvent($googleEvent): array
     {
         // 開始と終了の取得例
         $start = $googleEvent->getStart();
