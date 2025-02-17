@@ -60,10 +60,10 @@ class CreateEventFromGoogleCalendarTest extends TestCase
             'detail'     => $fakeGoogleEvent->getDetail(),
         ];
 
-        $service = new EventCreateService();
+        $sut = new EventCreateService();
 
         //createEventメソッドを実行
-        $event = $service->createEvent($formattedResponse, $user->id);
+        $actual = $sut->createEvent($formattedResponse, $user->id);
 
         //DBに保存されたイベントが期待通りか確認
         $this->assertDatabaseHas('events', [
@@ -77,7 +77,7 @@ class CreateEventFromGoogleCalendarTest extends TestCase
             'detail' => $formattedResponse['detail'],
         ]);
 
-        $this->assertInstanceOf(Event::class, $event);
+        $this->assertInstanceOf(Event::class, $actual);
 
     }
 
@@ -143,12 +143,12 @@ class CreateEventFromGoogleCalendarTest extends TestCase
         $mockCalendarService->events = $fakeEventsResource;
 
         //GoogleCalendarServiceのインスタンスを生成して、getEventsメソッドを実行
-        $service = new GoogleCalendarService($mockCalendarService);
+        $sut = new GoogleCalendarService($mockCalendarService);
 
-        $events = $service->getEvents('primary');
+        $actual = $sut->getEvents('primary');
 
-        $this->assertEquals($fakeEventsArray, $events);
-        $this->assertIsArray($events);
-        $this->assertEquals($fakeGoogleEvent->getSummary(), $events[0]->getSummary());
+        $this->assertEquals($fakeEventsArray, $actual);
+        $this->assertIsArray($actual);
+        $this->assertEquals($fakeGoogleEvent->getSummary(), $actual[0]->getSummary());
     }
 }

@@ -28,9 +28,9 @@ class CreateEventTest extends TestCase
             'detail'     => 'プロジェクト進捗会議',
         ];
 
-        $service = new EventCreateService();
+        $sut = new EventCreateService();
 
-        $createdEvent = $service->createEvent($fakeEvent, $user->id);
+        $actual = $sut->createEvent($fakeEvent, $user->id);
 
         $this->assertDatabaseHas('events', [
             'user_id'    => $user->id,
@@ -43,6 +43,6 @@ class CreateEventTest extends TestCase
             'detail'     => 'プロジェクト進捗会議',
         ]);
 
-        $this->assertInstanceOf(Event::class, $createdEvent);
+        $this->assertInstanceOf(Event::class, $actual);
     }
 }

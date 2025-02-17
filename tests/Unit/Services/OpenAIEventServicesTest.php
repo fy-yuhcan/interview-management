@@ -84,13 +84,13 @@ class OpenAIEventServicesTest extends TestCase
         $fakeAPIresponse = json_encode($formattedResponse);
         $fakeAPIresponse = json_decode($fakeAPIresponse, true);
 
-        $service = new EventCreateService();
+        $sut = new EventCreateService();
 
         $user = User::factory()->create();
 
 
         //createEventメソッドを実行
-        $event = $service->createEvent($fakeAPIresponse, $user->id);
+        $actual = $sut->createEvent($fakeAPIresponse, $user->id);
 
         //データベースにデータが保存されているか確認
         $this->assertDatabaseHas('events', [
@@ -105,6 +105,6 @@ class OpenAIEventServicesTest extends TestCase
         ]);
 
         //Eventクラスのインスタンスか確認
-        $this->assertInstanceOf(Event::class, $event);
+        $this->assertInstanceOf(Event::class, $actual);
     }
 }
