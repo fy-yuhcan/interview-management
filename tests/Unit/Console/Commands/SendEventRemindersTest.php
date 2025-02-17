@@ -20,13 +20,16 @@ class SendEventRemindersTest extends TestCase
         //Notificationをフェイク
         Notification::fake();
 
+        // 現在時刻を固定
+        $now = Carbon::now();
+
         //テスト用ユーザーとイベントを作成
         $user = User::factory()->create();
         $event = Event::factory()->create([
             'user_id'        => $user->id,
-            'reservation_time' => Carbon::now()->addMinute(),
-            'start_time'     => Carbon::now()->addMinutes(10),
-            'end_time'       => Carbon::now()->addMinutes(20),
+            'reservation_time' => $now->copy()->addSeconds(30),
+            'start_time'     => $now->copy()->addMinutes(10),
+            'end_time'       => $now->copy()->addMinutes(20),
             'reminder_sent'  => false,
         ]);
 
@@ -44,5 +47,8 @@ class SendEventRemindersTest extends TestCase
                 return $notification->event->id === $event->id;
             }
         );
+
+        //reminder_sentがtrueになっているか検証
+        $this->assertTrue($event->fresh()->reminder_sent);
     }
 }
