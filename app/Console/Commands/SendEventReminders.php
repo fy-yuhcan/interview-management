@@ -41,7 +41,8 @@ class SendEventReminders extends Command
         // イベントごとに通知を送信してreminder_sentをtrueにする
         foreach ($events as $event) {
             $event->user->notify(new EventReminderNotification($event));
-            $event->reminder_sent = true;
+            //reminder_sentをtrueにするように更新
+            $event->update(['reminder_sent' => true]);
         }
     }
 }

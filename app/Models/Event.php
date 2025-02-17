@@ -20,6 +20,11 @@ class Event extends Model
         'status',
         'url',
         'detail',
+        'reminder_sent'
+    ];
+
+    protected $casts = [
+        'reminder_sent' => 'boolean',
     ];
 
     public function user()
