@@ -4,6 +4,7 @@ namespace Tests\Unit;
 
 use App\Models\Event;
 use App\Models\User;
+use App\Services\EventCreateService;
 use App\Services\OpenAIEventService;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use OpenAI\Laravel\Facades\OpenAI;
@@ -30,7 +31,7 @@ class OpenAIEventServicesTest extends TestCase
         $prompt = '2月10日16時に打ち合わせを行います。';
 
         //fakeを使ってOpenAI::createPromptメソッドをモック化
-        $fakeAPIresponse = [
+        $expected = [
             'title'      => '会議',
             'start_time' => '2025-02-20 10:00:00',
             'end_time'   => '2025-02-20 11:00:00',
@@ -48,7 +49,7 @@ class OpenAIEventServicesTest extends TestCase
                         'index' => 0,
                         'message' => [
                             'role' => 'assistant',
-                            'content' => json_encode($fakeAPIresponse),
+                            'content' => json_encode($expected),
                         ],
                         'finish_reason' => 'stop',
                     ]
@@ -56,14 +57,13 @@ class OpenAIEventServicesTest extends TestCase
             ])
         ]);
 
-        //OpenAI::chat()->createメソッドを実行
-        $response = OpenAI::chat()->create([
-            'model' => 'gpt-3.5-turbo',
-            'prompt' => $prompt,
-        ]);
+        //インスタンスを生成してメソッドを実行するように修正することでインプットのプロンプトから期待する整形されたレスポンスを作成することを担保するテスト
+        $sut = new OpenAIEventService();
+
+        $actual = $sut->getFormattedEventData($prompt);
 
         //OpenAI::chat()->createメソッドが正常に実行されたか確認
-        $this->assertEquals(json_encode($fakeAPIresponse), $response['choices'][0]['message']['content']);
+        $this->assertEquals($expected, $actual);
     }
 
     public function test_service_create_event_in_db_from_openai_response()
@@ -83,14 +83,13 @@ class OpenAIEventServicesTest extends TestCase
         $fakeAPIresponse = json_encode($formattedResponse);
         $fakeAPIresponse = json_decode($fakeAPIresponse, true);
 
-        //OpenAIEventServiceをインスタンス化
-        $service = new OpenAIEventService();
+        $sut = new EventCreateService();
 
         $user = User::factory()->create();
 
 
         //createEventメソッドを実行
-        $event = $service->createEvent($fakeAPIresponse, $user->id);
+        $actual = $sut->createEvent($fakeAPIresponse, $user->id);
 
         //データベースにデータが保存されているか確認
         $this->assertDatabaseHas('events', [
@@ -105,6 +104,6 @@ class OpenAIEventServicesTest extends TestCase
         ]);
 
         //Eventクラスのインスタンスか確認
-        $this->assertInstanceOf(Event::class, $event);
+        $this->assertInstanceOf(Event::class, $actual);
     }
 }
