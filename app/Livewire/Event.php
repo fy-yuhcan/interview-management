@@ -19,4 +19,9 @@ class Event extends Component
     {
         return view('livewire.event');
     }
+
+    public function show(Event $event)
+    {
+        return redirect()->route('event.show', ['event' => $event]);
+    }
 }
