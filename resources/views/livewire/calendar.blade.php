@@ -29,10 +29,10 @@
                 <td style="vertical-align: top;">
                     @if(count($hourEvents) > 0)
                     @foreach($hourEvents as $event)
-                    <div style="background-color: #ffe4e1; margin-bottom: 5px;">
+                    <a href="{{ route('events.show', ['event' => $event->id]) }}">
                         <strong>タイトル:</strong> {{ $event->title }}<br>
                         <strong>開始:</strong> {{ $event->start_time->format('H:i') }}
-                    </div>
+                    </a>
                     @endforeach
                     @endif
                 </td>
