@@ -14,6 +14,7 @@
     <div class="container">
         @yield('content')
     </div>
+    @livewire('event')
 
     <!-- Livewire 用のスクリプト -->
     @livewireScripts
