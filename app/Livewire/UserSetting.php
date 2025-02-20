@@ -7,11 +7,13 @@ use Livewire\Component;
 
 class UserSetting extends Component
 {
+    public $user;
     public $email;
 
     public function mount()
     {
-        $this->email = Auth::user()->email;
+        $this->user = Auth::user();
+        $this->email = $this->user->email;
     }
 
 
@@ -32,6 +34,6 @@ class UserSetting extends Component
 
     public function render()
     {
-        return view('livewire.user-setting');
+        return view('livewire.user-setting')->layout('layouts.app');
     }
 }
