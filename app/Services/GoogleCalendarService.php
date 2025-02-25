@@ -3,6 +3,7 @@
 namespace App\Services;
 
 use App\Models\User;
+use Carbon\Carbon;
 use Google\Client as GoogleClient;
 use Google\Service\Calendar as GoogleCalendar;
 use Exception;
@@ -42,15 +43,19 @@ class GoogleCalendarService
      */
     public function createEvent($event)
     {
+        //iso8601形式に変換
+        $startIso = Carbon::parse($event['start_time'])->toIso8601String();
+        $endIso   = Carbon::parse($event['end_time'])->toIso8601String();
+
         $googleEvent = new \Google\Service\Calendar\Event([
             'summary' => $event['title'] ?? '',
             'description' => $event['detail'] ?? '',
             'start' => [
-                'dateTime' => $event['start_time'],
+                'dateTime' => $startIso,
                 'timeZone' => 'Asia/Tokyo',
             ],
             'end' => [
-                'dateTime' => $event['end_time'],
+                'dateTime' => $endIso,
                 'timeZone' => 'Asia/Tokyo',
             ]
         ]);
