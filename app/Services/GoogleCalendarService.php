@@ -29,8 +29,11 @@ class GoogleCalendarService
         }
     }
 
-    
 
+    public function deleteEvent($calendarId,$googleCalendarId)
+    {
+        $this->calendarService->events->delete($calendarId, $googleCalendarId);
+    }
 
 
     /**

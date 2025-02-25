@@ -35,6 +35,6 @@ class SocialiteController extends Controller
         //ログイン処理
         Auth::login($user, true);
 
-        return redirect('/');
+        return redirect('/events');
     }
 }
