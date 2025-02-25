@@ -11,11 +11,49 @@ class EventDetail extends Component
 {
     public $event;
     public $event_id;
+    public $edit = false;
+    public $title;
+    public $start_time;
+    public $end_time;
+    public $reservation_time;
+    public $detail;
 
     public function mount($event_id)
     {
         $this->event_id = $event_id;
         $this->event = Event::find($event_id);
+
+        $this->title = $this->event->title;
+        $this->start_time = $this->event->start_time;
+        $this->end_time = $this->event->end_time;
+        $this->reservation_time = $this->event->reservation_time;
+        $this->detail = $this->event->detail;
+    }
+
+    //編集ボタンを押したとき
+    public function editEvent()
+    {
+        $this->edit = true;
+    }
+
+    //キャンセルボタンを押したとき
+    public function cancel()
+    {
+        $this->edit = false;
+    }
+
+    //更新ボタンを押したとき
+    public function updateEvent()
+    {
+        //ここで更新とgoogleカレンダーの更新を行う
+        $this->updateEventAndGoogleCalendar();
+
+        $this->edit = false;
+
+        session()->flash('message', 'イベントを更新しました');
+
+        //再読み込み
+        $this->mount($this->event_id);
     }
 
     public function deleteEvent()
