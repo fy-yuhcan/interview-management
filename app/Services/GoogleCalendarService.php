@@ -40,7 +40,9 @@ class GoogleCalendarService
     public function setAccessTokenForUser(User $user)
     {
         if ($this->client->isAccessTokenExpired()) {
-            $newToken = $this->client->fetchAccessTokenWithRefreshToken($this->client->getRefreshToken());
+            //refreshtokenをuserから取得して、tokenが切れた時に新しいtokenを取得
+            $refreshToken = $user->refresh_token;
+            $newToken = $this->client->fetchAccessTokenWithRefreshToken($refreshToken);
             $user->update([
                 'token' => $newToken['access_token'],
                 'expires_in' => $newToken['expires_in'],
