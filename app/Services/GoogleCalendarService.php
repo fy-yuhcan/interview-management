@@ -2,12 +2,14 @@
 
 namespace App\Services;
 
+use App\Models\User;
 use Google\Client as GoogleClient;
 use Google\Service\Calendar as GoogleCalendar;
 use Exception;
 
 class GoogleCalendarService
 {
+    protected $client;
     protected $calendarService;
 
     /**
@@ -23,13 +25,38 @@ class GoogleCalendarService
             $this->calendarService = $accessTokenOrCalendar;
         } else {
             // アクセストークンをセットしてGoogleCalendarを生成
-            $client = new GoogleClient();
-            $client->setAccessToken($accessTokenOrCalendar);
-            $this->calendarService = new GoogleCalendar($client);
+            $this->client = new GoogleClient();
+            $this->client->setAccessToken($accessTokenOrCalendar);
+            $this->calendarService = new GoogleCalendar($this->client);
         }
     }
 
+    /**
+     * ユーザーのアクセストークンが期限切れかどうかをチェックするメソッド
+     *
+     * @param User $user
+     * @return void
+     */
+    public function setAccessTokenForUser(User $user)
+    {
+        if ($this->client->isAccessTokenExpired()) {
+            $newToken = $this->client->fetchAccessTokenWithRefreshToken($this->client->getRefreshToken());
+            $user->update([
+                'token' => $newToken['access_token'],
+                'expires_in' => $newToken['expires_in'],
+                'token_created' => now()->timestamp,
+            ]);
 
+            $this->client->setAccessToken($newToken);
+        }
+    }
+
+    /**
+     * イベントを作成するメソッド
+     *
+     * @param string $calendarId カレンダーID（primary)
+     * @param string $googleCalendarId GoogleカレンダーID
+     */
     public function deleteEvent($calendarId,$googleCalendarId)
     {
         $this->calendarService->events->delete($calendarId, $googleCalendarId);
