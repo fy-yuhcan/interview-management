@@ -26,7 +26,10 @@ class GoogleCalendarService
         } else {
             // アクセストークンをセットしてGoogleCalendarを生成
             $this->client = new GoogleClient();
+            $this->client->setClientId(env('GOOGLE_CLIENT_ID'));
+            $this->client->setClientSecret(env('GOOGLE_CLIENT_SECRET'));
             $this->client->setAccessToken($accessTokenOrCalendar);
+
             $this->calendarService = new GoogleCalendar($this->client);
         }
     }
@@ -38,11 +41,9 @@ class GoogleCalendarService
      * @return void
      */
     public function setAccessTokenForUser(User $user)
-    {
+    {   
         if ($this->client->isAccessTokenExpired()) {
-            //refreshtokenをuserから取得して、tokenが切れた時に新しいtokenを取得
-            $refreshToken = $user->refresh_token;
-            $newToken = $this->client->fetchAccessTokenWithRefreshToken($refreshToken);
+            $newToken = $this->client->fetchAccessTokenWithRefreshToken($user->refresh_token);
             $user->update([
                 'token' => $newToken['access_token'],
                 'expires_in' => $newToken['expires_in'],

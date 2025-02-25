@@ -11,5 +11,5 @@ Artisan::command('inspire', function () {
 // 1時間ごとにGoogleカレンダーからイベントを取得してデータベースに保存する
 Schedule::command('app:create-google-calendar-events')->everyMinute();
 
-// // 1分ごとにイベントリマインダーを送信する
-// Schedule::command('app:send-event-reminders')->everyMinute();
+// 1分ごとにイベントリマインダーを送信する
+Schedule::command('app:send-event-reminders')->everyMinute();
