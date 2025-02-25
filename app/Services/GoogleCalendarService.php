@@ -35,13 +35,39 @@ class GoogleCalendarService
     }
 
     /**
+     * イベントを作成するメソッド
+     *
+     * @param array $event
+     * @return \Google\Service\Calendar\Event 作成したイベントオブジェクト
+     */
+    public function createEvent($event)
+    {
+        $googleEvent = new \Google\Service\Calendar\Event([
+            'summary' => $event['title'] ?? null,
+            'description' => $event['detail'] ?? null,
+            'start' => [
+                'dateTime' => $event['start_time'],
+                'timeZone' => 'Asia/Tokyo',
+            ],
+            'end' => [
+                'dateTime' => $event['end_time'],
+                'timeZone' => 'Asia/Tokyo',
+            ]
+        ]);
+
+        $this->calendarService->events->insert('primary', $googleEvent);
+
+        return $googleEvent;
+    }
+
+    /**
      * ユーザーのアクセストークンが期限切れかどうかをチェックするメソッド
      *
      * @param User $user
      * @return void
      */
     public function setAccessTokenForUser(User $user)
-    {   
+    {
         if ($this->client->isAccessTokenExpired()) {
             $newToken = $this->client->fetchAccessTokenWithRefreshToken($user->refresh_token);
             $user->update([
@@ -60,7 +86,7 @@ class GoogleCalendarService
      * @param string $calendarId カレンダーID（primary)
      * @param string $googleCalendarId GoogleカレンダーID
      */
-    public function deleteEvent($calendarId,$googleCalendarId)
+    public function deleteEvent($calendarId, $googleCalendarId)
     {
         $this->calendarService->events->delete($calendarId, $googleCalendarId);
     }
@@ -95,7 +121,7 @@ class GoogleCalendarService
             'orderBy'      => 'startTime',
             'singleEvents' => true,
             //ここで現在時刻以降のイベントを取得するように設定
-            'timeMin'      => date('c'), 
+            'timeMin'      => date('c'),
         ];
 
         $eventsResult = $this->calendarService->events->listEvents('primary', $optParams);
@@ -123,11 +149,10 @@ class GoogleCalendarService
             'title'             => $googleEvent->getSummary() ?? null,
             'start_time'        => $startTime,
             'end_time'          => $endTime,
-            'reservation_time'  => null, 
+            'reservation_time'  => null,
             'status'            => '予定',
-            'url'               => '', 
+            'url'               => '',
             'detail'            => $googleEvent->getDescription()   ?? null,
         ];
     }
 }
-
