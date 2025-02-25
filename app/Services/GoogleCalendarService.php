@@ -43,8 +43,8 @@ class GoogleCalendarService
     public function createEvent($event)
     {
         $googleEvent = new \Google\Service\Calendar\Event([
-            'summary' => $event['title'] ?? null,
-            'description' => $event['detail'] ?? null,
+            'summary' => $event['title'] ?? '',
+            'description' => $event['detail'] ?? '',
             'start' => [
                 'dateTime' => $event['start_time'],
                 'timeZone' => 'Asia/Tokyo',
