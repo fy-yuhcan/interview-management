@@ -37,7 +37,7 @@ class EventDetail extends Component
     }
 
     //キャンセルボタンを押したとき
-    public function cancel()
+    public function cancelEdit()
     {
         $this->edit = false;
     }
