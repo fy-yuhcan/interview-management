@@ -29,8 +29,12 @@ class EventDetail extends Component
 
         $service = new GoogleCalendarService($accessToken);
 
+        //アクセストークンが期限切れかどうかをチェック
+        $service->setAccessTokenForUser(Auth::user());
+
         $service->deleteEvent($calendarId,$googleCalendarId);
 
+        //DBから削除
         $this->event->delete();
 
         return redirect()->route('event');
