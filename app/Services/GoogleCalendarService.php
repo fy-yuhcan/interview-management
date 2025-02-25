@@ -29,6 +29,9 @@ class GoogleCalendarService
         }
     }
 
+    
+
+
 
     /**
      * ログイン中のユーザーが所有する primary カレンダーからイベントを取得し、フォーマットするメソッド
