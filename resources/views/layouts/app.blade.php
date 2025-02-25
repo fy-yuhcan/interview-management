@@ -13,6 +13,7 @@
     
     <div class="container">
         @yield('content')
+        @livewire('calendar')
     </div>
 
     <!-- Livewire 用のスクリプト -->
