@@ -37,6 +37,8 @@ class EventDetail extends Component
         //DBから削除
         $this->event->delete();
 
+        session()->flash('message', 'イベントを削除しました');
+
         return redirect()->route('event');
     }
 
