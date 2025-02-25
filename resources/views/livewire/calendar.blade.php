@@ -29,7 +29,7 @@
                 <td style="vertical-align: top;">
                     @if(count($hourEvents) > 0)
                     @foreach($hourEvents as $event)
-                    <a href="{{ route('events.show', ['event' => $event->id]) }}">
+                    <a href="{{ route('events.show', ['event_id' => $event->id]) }}">
                         <strong>タイトル:</strong> {{ $event->title }}<br>
                         <strong>開始:</strong> {{ $event->start_time->format('H:i') }}
                     </a>
