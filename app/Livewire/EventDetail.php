@@ -39,7 +39,7 @@ class EventDetail extends Component
 
         session()->flash('message', 'イベントを削除しました');
 
-        return redirect()->route('event');
+        return redirect()->to('/events');
     }
 
 
