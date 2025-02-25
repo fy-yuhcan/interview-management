@@ -30,6 +30,10 @@ class EventDetail extends Component
         $service = new GoogleCalendarService($accessToken);
 
         $service->deleteEvent($calendarId,$googleCalendarId);
+
+        $this->event->delete();
+
+        return redirect()->route('event');
     }
 
 
