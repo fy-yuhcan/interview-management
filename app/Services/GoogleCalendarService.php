@@ -60,9 +60,9 @@ class GoogleCalendarService
             ]
         ]);
 
-        $this->calendarService->events->insert('primary', $googleEvent);
+        $createdGoogleEvent = $this->calendarService->events->insert('primary', $googleEvent);
 
-        return $googleEvent;
+        return $createdGoogleEvent;
     }
 
     /**
