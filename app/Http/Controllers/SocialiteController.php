@@ -20,7 +20,7 @@ class SocialiteController extends Controller
     {
         return Socialite::driver($provider)
             ->scopes(['https://www.googleapis.com/auth/calendar.events'])
-            ->with(['access_type' => 'offline'])
+            ->with(['access_type' => 'offline', 'prompt' => 'consent'])
             ->redirect();
     }
 
