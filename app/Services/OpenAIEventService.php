@@ -21,10 +21,17 @@ class OpenAIEventService
 
         $formattedResponse = $this->getFormattedEventData($prompt);
 
+        $googleCalendarService = new GoogleCalendarService($user->token);
+
+        // アクセストークンが期限切れかどうかをチェック
+        $googleCalendarService->setAccessTokenForUser($user);
+
+        $createGoogleCalendarEvent = $googleCalendarService->createEvent($formattedResponse);
+
         // EventCreateService クラスのインスタンスを生成して createEvent メソッドを呼び出して登録
         $createEventService = new EventCreateService();
 
-        $event = $createEventService->createEvent($formattedResponse, $user->id);
+        $event = $createEventService->createEvent($formattedResponse, $user->id,$createGoogleCalendarEvent);
 
         // イベント作成通知を送信
         $user->notify(new EventCreatedNotification($event));

@@ -27,6 +27,9 @@ class User extends Authenticatable
         'avatar',
         'token',
         'refresh_token',
+        'expires_in',
+        'token_created',
+        'token_type',
     ];
 
     /**

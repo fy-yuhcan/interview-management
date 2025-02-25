@@ -2,12 +2,15 @@
 
 namespace App\Services;
 
+use App\Models\User;
+use Carbon\Carbon;
 use Google\Client as GoogleClient;
 use Google\Service\Calendar as GoogleCalendar;
 use Exception;
 
 class GoogleCalendarService
 {
+    protected $client;
     protected $calendarService;
 
     /**
@@ -23,10 +26,104 @@ class GoogleCalendarService
             $this->calendarService = $accessTokenOrCalendar;
         } else {
             // アクセストークンをセットしてGoogleCalendarを生成
-            $client = new GoogleClient();
-            $client->setAccessToken($accessTokenOrCalendar);
-            $this->calendarService = new GoogleCalendar($client);
+            $this->client = new GoogleClient();
+            $this->client->setClientId(env('GOOGLE_CLIENT_ID'));
+            $this->client->setClientSecret(env('GOOGLE_CLIENT_SECRET'));
+            $this->client->setAccessToken($accessTokenOrCalendar);
+
+            $this->calendarService = new GoogleCalendar($this->client);
         }
+    }
+
+    /**
+     * イベントを作成するメソッド
+     *
+     * @param array $event
+     * @return \Google\Service\Calendar\Event 作成したイベントオブジェクト
+     */
+    public function createEvent($event)
+    {
+        //iso8601形式に変換
+        $startIso = Carbon::parse($event['start_time'])->toIso8601String();
+        $endIso   = Carbon::parse($event['end_time'])->toIso8601String();
+
+        $googleEvent = new \Google\Service\Calendar\Event([
+            'summary' => $event['title'] ?? '',
+            'description' => $event['detail'] ?? '',
+            'start' => [
+                'dateTime' => $startIso,
+                'timeZone' => 'Asia/Tokyo',
+            ],
+            'end' => [
+                'dateTime' => $endIso,
+                'timeZone' => 'Asia/Tokyo',
+            ]
+        ]);
+
+        $createdGoogleEvent = $this->calendarService->events->insert('primary', $googleEvent);
+
+        return $createdGoogleEvent;
+    }
+
+    /**
+     * イベントを更新するメソッド
+     *
+     * @param object $event
+     * @return \Google\Service\Calendar\Event 更新したイベントオブジェクト
+     */
+    public function updateEvent($event)
+    {
+        //iso8601形式に変換
+        $startIso = Carbon::parse($event->start_time)->toIso8601String();
+        $endIso   = Carbon::parse($event->end_time)->toIso8601String();
+
+        $googleEvent = new \Google\Service\Calendar\Event([
+            'summary' => $event->title ?? '',
+            'description' => $event->detail ?? '',
+            'start' => [
+                'dateTime' => $startIso,
+                'timeZone' => 'Asia/Tokyo',
+            ],
+            'end' => [
+                'dateTime' => $endIso,
+                'timeZone' => 'Asia/Tokyo',
+            ]
+        ]);
+
+        $this->calendarService->events->update('primary', $event->calendar_id, $googleEvent);
+
+        return $googleEvent;
+    }
+
+    /**
+     * ユーザーのアクセストークンが期限切れかどうかをチェックするメソッド
+     *
+     * @param User $user
+     * @return void
+     */
+    public function setAccessTokenForUser(User $user)
+    {
+        if ($this->client->isAccessTokenExpired()) {
+            $newToken = $this->client->fetchAccessTokenWithRefreshToken($user->refresh_token);
+            $user->update([
+                'token' => $newToken['access_token'],
+                'expires_in' => $newToken['expires_in'],
+                'token_created' => now()->timestamp,
+            ]);
+
+            $this->client->setAccessToken($newToken);
+        }
+    }
+
+    /**
+     * イベントを作成するメソッド
+     *
+     * @param string $calendarId カレンダーID（primary)
+     * @param string $googleCalendarId GoogleカレンダーID
+     */
+    public function deleteEvent($calendarId, $googleCalendarId)
+    {
+        $this->calendarService->events->delete($calendarId, $googleCalendarId);
     }
 
 
@@ -59,7 +156,7 @@ class GoogleCalendarService
             'orderBy'      => 'startTime',
             'singleEvents' => true,
             //ここで現在時刻以降のイベントを取得するように設定
-            'timeMin'      => date('c'), 
+            'timeMin'      => date('c'),
         ];
 
         $eventsResult = $this->calendarService->events->listEvents('primary', $optParams);
@@ -87,11 +184,10 @@ class GoogleCalendarService
             'title'             => $googleEvent->getSummary() ?? null,
             'start_time'        => $startTime,
             'end_time'          => $endTime,
-            'reservation_time'  => null, 
+            'reservation_time'  => null,
             'status'            => '予定',
-            'url'               => '', 
+            'url'               => '',
             'detail'            => $googleEvent->getDescription()   ?? null,
         ];
     }
 }
-
