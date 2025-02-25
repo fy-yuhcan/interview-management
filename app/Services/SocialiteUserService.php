@@ -18,6 +18,9 @@ class SocialiteUserService
                 'avatar' => $user->avatar,
                 'token' => $user->token,
                 'refresh_token' => $user->refreshToken,
+                'expires_in' => $user->expiresIn,
+                'token_created' => now()->timestamp,
+                'token_type' => $user->tokenType,
             ]
             );
     }
