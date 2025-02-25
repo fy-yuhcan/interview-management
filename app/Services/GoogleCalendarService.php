@@ -66,6 +66,36 @@ class GoogleCalendarService
     }
 
     /**
+     * イベントを更新するメソッド
+     *
+     * @param object $event
+     * @return \Google\Service\Calendar\Event 更新したイベントオブジェクト
+     */
+    public function updateEvent($event)
+    {
+        //iso8601形式に変換
+        $startIso = Carbon::parse($event->start_time)->toIso8601String();
+        $endIso   = Carbon::parse($event->end_time)->toIso8601String();
+
+        $googleEvent = new \Google\Service\Calendar\Event([
+            'summary' => $event->title ?? '',
+            'description' => $event->detail ?? '',
+            'start' => [
+                'dateTime' => $startIso,
+                'timeZone' => 'Asia/Tokyo',
+            ],
+            'end' => [
+                'dateTime' => $endIso,
+                'timeZone' => 'Asia/Tokyo',
+            ]
+        ]);
+
+        $this->calendarService->events->update('primary', $event->calendar_id, $googleEvent);
+
+        return $googleEvent;
+    }
+
+    /**
      * ユーザーのアクセストークンが期限切れかどうかをチェックするメソッド
      *
      * @param User $user
