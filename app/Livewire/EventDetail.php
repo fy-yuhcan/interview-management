@@ -19,6 +19,6 @@ class EventDetail extends Component
 
     public function render()
     {
-        return view('livewire.event-detail');
+        return view('livewire.event-detail')->layout('layouts.app'); 
     }
 }

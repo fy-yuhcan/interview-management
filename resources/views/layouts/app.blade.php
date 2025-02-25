@@ -10,10 +10,13 @@
 </head>
 <body>
     @livewire('header')
-    
+
     <div class="container">
         @yield('content')
-        @livewire('calendar')
+    
+        @isset($slot)
+        {{ $slot }}
+        @endisset
     </div>
 
     <!-- Livewire 用のスクリプト -->
