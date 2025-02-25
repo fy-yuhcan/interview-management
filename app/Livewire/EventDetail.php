@@ -56,6 +56,28 @@ class EventDetail extends Component
         $this->mount($this->event_id);
     }
 
+    public function updateEventAndGoogleCalendar()
+    {
+        $this->event->update([
+            'title' => $this->title,
+            'start_time' => $this->start_time,
+            'end_time' => $this->end_time,
+            'reservation_time' => $this->reservation_time,
+            'detail' => $this->detail,
+        ]);
+
+        //googleカレンダーの更新
+        $user = Auth::user();
+        $accessToken = $user->token;
+
+        $service = new GoogleCalendarService($accessToken);
+
+        //アクセストークンが期限切れかどうかをチェック
+        $service->setAccessTokenForUser($user);
+
+        $service->updateEvent($this->event);
+    }
+
     public function deleteEvent()
     {
         //googleカレンダーから削除し、DBからも削除
