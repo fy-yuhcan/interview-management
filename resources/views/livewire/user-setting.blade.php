@@ -9,6 +9,7 @@
 
     <form wire:submit.prevent="updateEmail">
         <div>
+            {{-- とりあえずメールアドレスだけ --}}
             <label>メールアドレス:</label>
             <input type="email" wire:model="email" placeholder="{{ $user->email }}">
         </div>
