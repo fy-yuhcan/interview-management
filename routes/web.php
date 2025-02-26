@@ -2,6 +2,7 @@
 
 use App\Http\Controllers\SocialiteController;
 use App\Livewire\EventDetail;
+use App\Livewire\UserSetting;
 use Illuminate\Support\Facades\Route;
 
 Route::get('/events', function () {
@@ -15,3 +16,4 @@ Route::get('/events/{event_id}', EventDetail::class)->name('events.show');
 Route::get('/user/settings', function () {
     return view('user.settings');
 })->middleware('auth')->name('user.settings');
+Route::get('/user/setting', UserSetting::class)->name('user.setting');
