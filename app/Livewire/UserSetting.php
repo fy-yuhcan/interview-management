@@ -12,6 +12,7 @@ class UserSetting extends Component
 
     public function mount()
     {
+        $this->user = Auth::user();
         $this->email = $this->user->email;
     }
 

@@ -28,7 +28,7 @@ class SendEventReminders extends Command
      */
     public function handle()
     {
-        $now = Carbon::now();
+        $now = Carbon::now('Asia/Tokyo');
 
         //現在から1分間隔で通知する幅を指定
         $end = $now->copy()->addMinutes(1);

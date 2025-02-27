@@ -24,6 +24,7 @@ class Event extends Model
     ];
 
     protected $casts = [
+        'reservation_time' => 'datetime',
         'reminder_sent' => 'boolean',
     ];
 
