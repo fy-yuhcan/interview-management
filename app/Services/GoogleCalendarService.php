@@ -151,12 +151,16 @@ class GoogleCalendarService
      */
     public function getEvents(): array
     {
+        $nowTokyo = (new \DateTime('now', new \DateTimeZone('Asia/Tokyo')))
+        ->format(\DateTime::RFC3339);
+
         $optParams = [
             'maxResults'   => 100,
             'orderBy'      => 'startTime',
             'singleEvents' => true,
-            //ここで現在時刻以降のイベントを取得するように設定
-            'timeMin'      => date('c'),
+            'timeMin'      => $nowTokyo,
+            //ここで指定しても変わらず理由不明
+            'timeZone'     => 'Asia/Tokyo',
         ];
 
         $eventsResult = $this->calendarService->events->listEvents('primary', $optParams);
@@ -171,23 +175,39 @@ class GoogleCalendarService
      */
     public function formatGoogleEvent($googleEvent): array
     {
-        //googleカレンダーからのイベントの開始と終了時間を取得
+        // googleカレンダーからのイベントの開始と終了時間を取得
         $start = $googleEvent->getStart();
         $end   = $googleEvent->getEnd();
 
-        //整形するために時間を取得
+        // 整形するために時間を取得
         $startTime = $start->getDateTime() ?? $start->getDate();
         $endTime   = $end->getDateTime()   ?? $end->getDate();
 
+        //なぜかgoogleカレンダーからのデータ取得だけtimezoneがおかしくなってしまうので強制的に変換する
+        $startTimeTokyo = null;
+        if ($startTime) {
+            $startTimeTokyo = (new \DateTime($startTime, new \DateTimeZone('UTC')))
+            ->setTimezone(new \DateTimeZone('Asia/Tokyo'))
+            ->format('Y-m-d H:i:s');    
+        }
+
+        $endTimeTokyo = null;
+        if ($endTime) {
+            $endTimeTokyo = (new \DateTime($endTime, new \DateTimeZone('UTC')))
+            ->setTimezone(new \DateTimeZone('Asia/Tokyo'))
+            ->format('Y-m-d H:i:s');
+        }
+
         return [
-            'calendar_id'       => $googleEvent->getId() ?? null,
-            'title'             => $googleEvent->getSummary() ?? null,
-            'start_time'        => $startTime,
-            'end_time'          => $endTime,
+            'calendar_id'       => $googleEvent->getId()          ?? null,
+            'title'             => $googleEvent->getSummary()     ?? null,
+            'start_time'        => $startTimeTokyo,
+            'end_time'          => $endTimeTokyo,
             'reservation_time'  => null,
             'status'            => '予定',
             'url'               => '',
-            'detail'            => $googleEvent->getDescription()   ?? null,
+            'detail'            => $googleEvent->getDescription() ?? null,
         ];
+
     }
 }
