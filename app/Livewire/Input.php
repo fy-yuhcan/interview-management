@@ -27,5 +27,7 @@ class Input extends Component
 
         //inputをクリア
         $this->prompt = '';
+
+        return redirect()->to('/events');
     }
 }
