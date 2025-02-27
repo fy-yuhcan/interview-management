@@ -7,7 +7,7 @@ use App\Models\Event;
 
 class EventCreateService
 {
-    public function createEvent($formattedResponse, $userId,$createGoogleCalendarEvent)
+    public function createEvent($formattedResponse, $userId,$createGoogleCalendarEvent = null)
     {
         //ここでgoogleカレンダーのid
         if (!isset($formattedResponse['calendar_id'])) {
