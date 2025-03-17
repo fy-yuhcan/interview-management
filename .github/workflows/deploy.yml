@@ -43,7 +43,7 @@ jobs:
 
       - name: Install Node dependencies and build assets
         run: |
-            npm ci
+            npm install
             npm run build
 
       #デプロイ用のパッケージを作成しS3にアップロード
