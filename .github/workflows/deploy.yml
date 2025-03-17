@@ -32,7 +32,7 @@ jobs:
       #Nodeの依存関係をインストールしビルド
       - name: Install Node dependencies and build assets
         run: |
-          npm ci
+          npm install
           npm run build
 
       #ZIP形式にパッケージ化
