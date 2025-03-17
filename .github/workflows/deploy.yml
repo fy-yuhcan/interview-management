@@ -35,11 +35,16 @@ jobs:
       - name: Install PHP dependencies
         run: composer install --no-dev --optimize-autoloader
 
-      #Nodeの依存関係をインストールしビルド
-      - name: Setup Node version-18
+      #Nodeのセットアップ
+      - name: Setup Node version-20
         uses: actions/setup-node@v4
         with:
-          node-version: 18
+          node-version: 20
+      #npminstallとビルド
+      - name: Clean up node_modules and package-lock.json
+        run: |
+          rm -rf node_modules
+          rm -f package-lock.json
 
       - name: Install Node dependencies and build assets
         run: |
