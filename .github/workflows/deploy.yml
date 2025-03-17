@@ -16,7 +16,7 @@ jobs:
     steps:
       #リポジトリの最新コードをチェックアウト
       - name: Checkout repository
-        uses: actions/checkout@v3
+        uses: actions/checkout@v4
 
       #AWS 認証情報の設定
       - name: Configure AWS credentials via OIDC
@@ -25,28 +25,34 @@ jobs:
           role-to-assume: ${{ secrets.AWS_OIDC_IAM }}
           aws-region: ap-northeast-1
 
+      #PHPのセットアップ
+      - name: Setup PHP
+        uses: shivammathur/setup-php@v2
+        with:
+          php-version: 8.2
+
       #PHPの依存関係をComposerでインストール
       - name: Install PHP dependencies
         run: composer install --no-dev --optimize-autoloader
 
       #Nodeの依存関係をインストールしビルド
-      - name: Clean up node_modules and package-lock.json
-        run: |
-            rm -rf node_modules
-            rm -f package-lock.json
+      - name: Setup Node version-18
+        uses: actions/setup-node@v4
+        with:
+          node-version: 18
 
       - name: Install Node dependencies and build assets
         run: |
-            npm install
+            npm ci
             npm run build
 
-      #ZIP形式にパッケージ化
-      - name: Package Application
-        run: zip -r production-package.zip . -x "*.git*" "*.env" 
-
-      #S3バケットにパッケージをアップロード
-      - name: Upload Package to S3
-        run: aws s3 cp production-package.zip s3://my-interview-management/
+      #デプロイ用のパッケージを作成しS3にアップロード
+      - name: Package and Push Deployment Revision
+        run: |
+          aws deploy push \
+            --application-name interview-management \
+            --s3-location bucket=my-interview-management,key=production-package.zip,bundleType=zip \
+            --description "Deployment revision pushed from GitHub Actions"
 
       #CodeDeployを利用してデプロイをトリガー
       - name: Trigger Deployment via CodeDeploy
