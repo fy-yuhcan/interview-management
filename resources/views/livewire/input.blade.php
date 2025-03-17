@@ -1,7 +1,7 @@
 <div>
     <form wire:submit.prevent="submit">
         <textarea wire:model="prompt" placeholder="イベントの内容を入力してください"></textarea>
-        <button type="submit">イベント作成</button>
+        <button type="submit">イベント作成(自動デプロイ確認用)</button>
     </form>
 
     @if (session()->has('message'))

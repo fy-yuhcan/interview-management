@@ -1,0 +1,53 @@
+name: Deploy to Production
+
+on:
+  push:
+    branches:
+      - main
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+
+    permissions:
+      id-token: write
+      contents: read
+
+    steps:
+      #リポジトリの最新コードをチェックアウト
+      - name: Checkout repository
+        uses: actions/checkout@v3
+
+      #AWS 認証情報の設定
+      - name: Configure AWS credentials via OIDC
+        uses: aws-actions/configure-aws-credentials@v2
+        with:
+          role-to-assume: ${{ secrets.AWS_OIDC_IAM }}
+          aws-region: ap-northeast-1
+
+      #PHPの依存関係をComposerでインストール
+      - name: Install PHP dependencies
+        run: composer install --no-dev --optimize-autoloader
+
+      #Nodeの依存関係をインストールしビルド
+      - name: Install Node dependencies and build assets
+        run: |
+          npm ci
+          npm run production
+
+      #ZIP形式にパッケージ化
+      - name: Package Application
+        run: zip -r production-package.zip . -x "*.git*" "*.env" 
+
+      #S3バケットにパッケージをアップロード
+      - name: Upload Package to S3
+        run: aws s3 cp production-package.zip s3://my-interview-management/
+
+      #CodeDeployを利用してデプロイをトリガー
+      - name: Trigger Deployment via CodeDeploy
+        run: |
+          aws deploy create-deployment \
+            --application-name interview-management \
+            --deployment-group-name aws-code-deploy-group \
+            --s3-location bucket=my-interview-management,key=production-package.zip,bundleType=zip \
+            --description "Deployment triggered from GitHub Actions"
