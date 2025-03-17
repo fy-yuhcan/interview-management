@@ -33,7 +33,7 @@ jobs:
       - name: Install Node dependencies and build assets
         run: |
           npm ci
-          npm run production
+          npm run build
 
       #ZIP形式にパッケージ化
       - name: Package Application
