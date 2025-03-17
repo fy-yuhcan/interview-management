@@ -37,7 +37,7 @@ jobs:
 
       #ZIP形式にパッケージ化
       - name: Package Application
-        run: zip -r production-package.zip .
+        run: zip -r production-package.zip . -x "*.git*" "*.env" 
 
       #S3バケットにパッケージをアップロード
       - name: Upload Package to S3
