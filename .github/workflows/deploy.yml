@@ -65,5 +65,5 @@ jobs:
           aws deploy create-deployment \
             --application-name interview-management \
             --deployment-group-name aws-code-deploy-group \
-            --s3-location "s3://my-interview-management/production-interview-management.zip" \
+            --s3-location bucket=my-interview-management,key=production-package.zip,bundleType=zip \
             --description "Deployment triggered from GitHub Actions"
