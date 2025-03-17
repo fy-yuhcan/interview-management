@@ -30,10 +30,15 @@ jobs:
         run: composer install --no-dev --optimize-autoloader
 
       #Nodeの依存関係をインストールしビルド
+      - name: Clean up node_modules and package-lock.json
+        run: |
+            rm -rf node_modules
+            rm -f package-lock.json
+
       - name: Install Node dependencies and build assets
         run: |
-          npm install
-          npm run build
+            npm install
+            npm run build
 
       #ZIP形式にパッケージ化
       - name: Package Application
