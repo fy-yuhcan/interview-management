@@ -57,6 +57,9 @@ jobs:
           aws deploy push \
             --application-name interview-management \
             --s3-location "s3://my-interview-management/production-interview-management.zip" \
+              --exclude ".git/*" \
+              --exclude ".env" \
+              --exclude "node_modules/*" \
             --description "Deployment revision pushed from GitHub Actions"
 
       #CodeDeployを利用してデプロイをトリガー
