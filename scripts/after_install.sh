@@ -4,7 +4,7 @@
 echo "Running AfterInstall hook..."
 
 #環境変数ファイルの準備
-ENV_PROD="/var/www/html/interview-management/.env.production"
+ENV_PROD="/home/ec2-user/env.production"
 ENV="/var/www/html/interview-management/.env"
 
 if [ -f "$ENV_PROD" ]; then
