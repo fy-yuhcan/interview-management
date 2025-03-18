@@ -12,5 +12,6 @@ sudo rm -rf /var/www/html/interview-management/package.json
 sudo rm -rf /var/www/html/interview-management/package-lock.json
 sudo rm -rf /var/www/html/interview-management/.editorconfig
 sudo rm -rf /var/www/html/interview-management/README.md
+sudo rm -rf /var/www/html/interview-management/composer.json
 
 set -e
