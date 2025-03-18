@@ -6,5 +6,6 @@ sudo systemctl stop nginx
 sudo systemctl stop php-fpm
 
 sudo rm -rf /var/www/html/interview-management/*
+sudo rm -rf /var/www/html/interview-management/.*
 
 set -e
