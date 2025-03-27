@@ -1,12 +1,14 @@
 name: Deploy to Production
 
 on:
-  push:
-    branches:
-      - main
+  workflow_run:
+    workflows: ["Run Tests"]
+    types:
+      - completed
 
 jobs:
   deploy:
+    if: ${{ github.event.workflow_run.conclusion == 'success' }}
     runs-on: ubuntu-latest
 
     permissions:
@@ -24,32 +26,6 @@ jobs:
         with:
           role-to-assume: ${{ secrets.AWS_OIDC_IAM }}
           aws-region: ap-northeast-1
-
-      #PHPのセットアップ
-      - name: Setup PHP
-        uses: shivammathur/setup-php@v2
-        with:
-          php-version: 8.2
-
-      #PHPの依存関係をComposerでインストール
-      - name: Install PHP dependencies
-        run: composer install --no-dev --optimize-autoloader
-
-      #Nodeのセットアップ
-      - name: Setup Node version-20
-        uses: actions/setup-node@v4
-        with:
-          node-version: 20
-      #npminstallとビルド
-      - name: Clean up node_modules and package-lock.json
-        run: |
-          rm -rf node_modules
-          rm -f package-lock.json
-
-      - name: Install Node dependencies and build assets
-        run: |
-            npm install
-            npm run build
 
       #デプロイ用のパッケージを作成しS3にアップロード
       - name: Package and Push Deployment Revision
