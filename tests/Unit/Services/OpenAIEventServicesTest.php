@@ -79,6 +79,13 @@ class OpenAIEventServicesTest extends TestCase
             'detail'     => 'プロジェクト進捗会議',
         ];
 
+        $fakeGoogleEvent = new class {
+            public function getId()
+            {
+                return 'dummy-google-event-id';
+            }
+        };
+        
         //json形式に変換
         $fakeAPIresponse = json_encode($formattedResponse);
         $fakeAPIresponse = json_decode($fakeAPIresponse, true);
@@ -89,7 +96,7 @@ class OpenAIEventServicesTest extends TestCase
 
 
         //createEventメソッドを実行
-        $actual = $sut->createEvent($fakeAPIresponse, $user->id);
+        $actual = $sut->createEvent($fakeAPIresponse, $user->id, $fakeGoogleEvent);
 
         //データベースにデータが保存されているか確認
         $this->assertDatabaseHas('events', [
