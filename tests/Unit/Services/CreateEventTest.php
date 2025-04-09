@@ -18,6 +18,13 @@ class CreateEventTest extends TestCase
     {
         $user  = User::factory()->create();
 
+        $fakeGoogleEvent = new class {
+            public function getId()
+            {
+                return 'dummy-google-event-id';
+            }
+        };
+
         $fakeEvent = [
             'title'      => '会議',
             'start_time' => '2025-02-20 10:00:00',
@@ -30,7 +37,7 @@ class CreateEventTest extends TestCase
 
         $sut = new EventCreateService();
 
-        $actual = $sut->createEvent($fakeEvent, $user->id);
+        $actual = $sut->createEvent($fakeEvent, $user->id, $fakeGoogleEvent);
 
         $this->assertDatabaseHas('events', [
             'user_id'    => $user->id,
