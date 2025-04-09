@@ -47,6 +47,10 @@ class CreateEventFromGoogleCalendarTest extends TestCase
             public function getDetail(){
                 return 'プロジェクト進捗会議';
             }
+            public function getId()
+            {
+                return 'google-calendar-event-id-123';
+            }
         };
         
 
@@ -63,11 +67,12 @@ class CreateEventFromGoogleCalendarTest extends TestCase
         $sut = new EventCreateService();
 
         //createEventメソッドを実行
-        $actual = $sut->createEvent($formattedResponse, $user->id);
+        $actual = $sut->createEvent($formattedResponse, $user->id, $fakeGoogleEvent);
 
         //DBに保存されたイベントが期待通りか確認
         $this->assertDatabaseHas('events', [
             'user_id' => $user->id,
+            'calendar_id' => $fakeGoogleEvent->getId(),
             'title' => $formattedResponse['title'],
             'start_time' => $formattedResponse['start_time'],
             'end_time' => $formattedResponse['end_time'],
