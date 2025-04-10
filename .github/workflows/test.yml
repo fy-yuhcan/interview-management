@@ -3,11 +3,31 @@ name: Run Tests
 on:
   push:
     branches:
-      - main
+      - 'main'
+  pull_request:
+    branches:
+      - '**'
 
 jobs:
   test:
     runs-on: ubuntu-latest
+
+    services:
+      mysql:
+        image: mysql:8.0
+        ports:
+          - 3306:3306
+        env:
+          MYSQL_ROOT_PASSWORD: password
+          MYSQL_ALLOW_EMPTY_PASSWORD: 'yes'
+          MYSQL_DATABASE: testing_db
+          MYSQL_USER: sail
+          MYSQL_PASSWORD: password
+        options: >-
+          --health-cmd "mysqladmin ping -h localhost" 
+          --health-interval 20s 
+          --health-timeout 10s 
+          --health-retries 10
 
     steps:
       - name: Checkout repository
@@ -17,9 +37,33 @@ jobs:
         uses: shivammathur/setup-php@v2
         with:
           php-version: 8.2
+          extensions: mbstring, pdo, pdo_mysql
 
       - name: Install PHP dependencies
         run: composer install --no-dev --optimize-autoloader
 
+      - name: Setup environment file
+        run: cp .env.testing .env
+
+      - name: Generate application key
+        run: php artisan key:generate
+
+      - name: Wait for MySQL to be healthy
+        run: |
+          for i in {1..100}; do
+            if mysqladmin ping -h mysql --silent; then
+              echo "MySQL is up!"
+              exit 0
+            fi
+            echo "Waiting for MySQL..."
+            sleep 2
+          done
+          echo "MySQL did not become healthy in time"
+          exit 1
+
+      - name: Run migrations
+        run: php artisan migrate --force
+
       - name: Run PHPUnit tests
         run: vendor/bin/phpunit --coverage-text
+
